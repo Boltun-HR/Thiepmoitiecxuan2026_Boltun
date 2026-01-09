@@ -10,6 +10,7 @@
     <style>
         * {
             font-family: 'Manrope', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         .chinese {
             font-family: 'Noto Serif SC', serif;
@@ -23,6 +24,18 @@
             background-attachment: fixed;
             position: relative;
             overflow-x: hidden;
+            touch-action: manipulation;
+        }
+        
+        /* Tối ưu hiệu ứng cho mobile */
+        @media (max-width: 768px) {
+            .card {
+                margin: 10px;
+                padding: 15px;
+            }
+            .firework-text {
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            }
         }
         
         /* Hiệu ứng vàng kim */
@@ -53,20 +66,7 @@
             border: 3px solid rgba(255, 215, 0, 0.2);
             position: relative;
             overflow: hidden;
-        }
-        
-        /* Hoa văn Tết ở góc card */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: linear-gradient(45deg, transparent 65%, rgba(255, 215, 0, 0.1) 75%, transparent 85%),
-                        linear-gradient(-45deg, transparent 65%, rgba(198, 40, 40, 0.1) 75%, transparent 85%);
-            z-index: -1;
-            border-radius: 2rem;
+            max-width: 95%;
         }
         
         .gradient-text {
@@ -123,14 +123,15 @@
                          0 0 20px rgba(255, 152, 0, 0.3);
         }
         
-        /* Phong bao lì xì bay */
+        /* Phong bao lì xì bay - tối ưu cho mobile */
         .envelope {
             position: fixed;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             opacity: 0.7;
             z-index: 1;
             pointer-events: none;
             animation: floatEnvelope 8s ease-in-out infinite;
+            will-change: transform, opacity;
         }
         
         @keyframes floatEnvelope {
@@ -140,15 +141,16 @@
             75% { transform: translate(10px, -30px) rotate(5deg); }
         }
         
-        /* Hoa đào rơi */
+        /* Hoa đào rơi - tối ưu cho mobile */
         .cherry-blossom {
             position: fixed;
             color: #ff4081;
-            font-size: 20px;
+            font-size: 16px;
             opacity: 0.7;
             pointer-events: none;
             z-index: 1;
             animation: fallBlossom 15s linear infinite;
+            will-change: transform, opacity;
         }
         
         @keyframes fallBlossom {
@@ -174,47 +176,7 @@
             0% { transform: translateY(0) rotate(0deg); }
             100% { transform: translateY(-5px) rotate(3deg); }
         }
-    </style>
-</head>
-<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
-    
-    <!-- Canvas cho pháo hoa -->
-    <canvas id="fw" class="fixed inset-0 pointer-events-none z-0"></canvas>
-    
-    <!-- Phong bao lì xì bay -->
-    <div id="envelopes-container"></div>
-    
-    <!-- Hoa đào rơi -->
-    <div id="cherry-container"></div>
-    
-    <!-- Nút âm thanh nền -->
-    <button id="musicToggle" class="fixed top-4 right-4 z-20 w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-red-500 text-white shadow-xl flex items-center justify-center hover:scale-110 transition-all">
-        <i class="fas fa-music"></i>
-    </button>
-    
-    <!-- Pháo giấy bay -->
-    <div id="confetti-container" class="fixed inset-0 pointer-events-none z-10"></div>
-    
-    <div class="card w-full max-w-2xl rounded-3xl overflow-hidden relative z-10">
         
-        <!-- Header với hiệu ứng Tết -->
-        <div class="relative bg-gradient-to-r from-red-800 via-red-700 to-red-600 p-8 md:p-10 text-center overflow-hidden">
-            <!-- Hoa văn Tết nền -->
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-4 left-4 text-4xl chinese">福</div>
-                <div class="absolute top-4 right-4 text-4xl chinese">禄</div>
-                <div class="absolute bottom-4 left-4 text-4xl chinese">寿</div>
-                <div class="absolute bottom-4 right-4 text-4xl chinese">喜</div>
-            </div>
-            
-            <!-- Ngựa vàng decor thay thế rồng -->
-            <div class="absolute -top-4 left-1/4 text-6xl opacity-20 gold-horse" style="color: #FFD700;">
-                🐎
-            </div>
-            <div class="absolute -top-4 right-1/4 text-6xl opacity-20 gold-horse" style="color: #FFD700; animation-delay: 0.5s">
-                🏇
-            </div>
-            
         /* ========== POPUP FORM STYLES ========== */
         .popup-overlay {
             position: fixed;
@@ -233,9 +195,9 @@
         .popup-content {
             background: linear-gradient(135deg, #ffffff 0%, #fff9f9 100%);
             border-radius: 20px;
-            padding: 2.5rem;
+            padding: 1.5rem;
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             border: 3px solid #ffd700;
             box-shadow: 0 25px 50px rgba(198, 40, 40, 0.3);
             position: relative;
@@ -247,7 +209,7 @@
         }
 
         .popup-header h3 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: #c62828;
             margin-bottom: 0.5rem;
         }
@@ -369,18 +331,54 @@
         .boltun-logo:hover {
             transform: scale(1.05);
         }
+        
+        /* Tối ưu cho mobile */
+        @media (max-width: 768px) {
+            .popup-content {
+                padding: 1rem;
+                max-width: 90%;
+            }
+            .popup-header h3 {
+                font-size: 1.3rem;
+            }
+            .form-group input {
+                padding: 10px 14px;
+            }
+            .popup-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        /* Giảm hiệu ứng trên mobile để tiết kiệm pin */
+        @media (max-width: 768px) {
+            .cherry-blossom {
+                font-size: 14px;
+                animation-duration: 12s;
+            }
+            .envelope {
+                font-size: 1rem;
+                animation-duration: 6s;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 md:p-8">
     
-    <canvas id="fw" class="fixed inset-0 pointer-events-none z-0"></canvas>
+    <!-- Canvas cho pháo hoa - chỉ hiển thị trên desktop -->
+    <canvas id="fw" class="fixed inset-0 pointer-events-none z-0 hidden md:block"></canvas>
+    
+    <!-- Phong bao lì xì bay -->
     <div id="envelopes-container"></div>
+    
+    <!-- Hoa đào rơi -->
     <div id="cherry-container"></div>
     
-    <button id="musicToggle" class="fixed top-4 right-4 z-20 w-12 h-12 rounded-full bg-gradient-to-br from-yellow-400 to-red-500 text-white shadow-xl flex items-center justify-center hover:scale-110 transition-all">
+    <!-- Nút âm thanh nền -->
+    <button id="musicToggle" class="fixed top-4 right-4 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-yellow-400 to-red-500 text-white shadow-xl flex items-center justify-center hover:scale-110 transition-all">
         <i class="fas fa-music"></i>
     </button>
     
+    <!-- Pháo giấy bay -->
     <div id="confetti-container" class="fixed inset-0 pointer-events-none z-10"></div>
     
     <!-- Popup Form Đăng Ký -->
@@ -426,149 +424,167 @@
     <div class="card w-full max-w-2xl rounded-3xl overflow-hidden relative z-10">
         
         <!-- Header với logo Boltun -->
-        <div class="relative bg-gradient-to-r from-red-800 via-red-700 to-red-600 p-8 md:p-10 text-center overflow-hidden">
+        <div class="relative bg-gradient-to-r from-red-800 via-red-700 to-red-600 p-6 md:p-10 text-center overflow-hidden">
             <!-- Logo Boltun từ GitHub -->
-            <div class="flex justify-center mb-4 boltun-logo">
+            <div class="flex justify-center mb-3 md:mb-4 boltun-logo">
                 <img src="https://github.com/dangthanh18041998-star/my-images/raw/main/M%E1%BA%AAU_LOGO-removebg-psua.png" 
                      alt="Boltun Corporation" 
-                     class="h-20 md:h-24 object-contain drop-shadow-lg">
+                     class="h-16 md:h-24 object-contain drop-shadow-lg">
             </div>
             
-            <p class="text-white font-bold text-lg md:text-xl mb-1 tracking-wide">
+            <p class="text-white font-bold text-base md:text-xl mb-1 tracking-wide">
                 BOLTUN INTERNATIONAL
             </p>
-            <p class="text-white font-bold text-lg md:text-xl mb-4 tracking-wide">
+            <p class="text-white font-bold text-base md:text-xl mb-3 md:mb-4 tracking-wide">
                 国际恒耀有限公司
             </p>
             
-            <div class="gold-line w-32 mx-auto my-3"></div>
+            <div class="gold-line w-24 md:w-32 mx-auto my-3"></div>
             
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight firework-text">TIỆC XUÂN 2026</h1>
-            <p class="chinese text-xl md:text-2xl text-yellow-200 font-semibold gold-shine">新春晚宴</p>
-             </div>
+            <h1 class="text-2xl md:text-5xl font-bold text-white mb-1 md:mb-2 tracking-tight firework-text">TIỆC XUÂN 2026</h1>
+            <p class="chinese text-lg md:text-2xl text-yellow-200 font-semibold gold-shine">新春晚宴</p>
+            
+            <!-- Hoa văn Tết nền -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-2 left-2 md:top-4 md:left-4 text-xl md:text-4xl chinese">福</div>
+                <div class="absolute top-2 right-2 md:top-4 md:right-4 text-xl md:text-4xl chinese">禄</div>
+                <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 text-xl md:text-4xl chinese">寿</div>
+                <div class="absolute bottom-2 right-2 md:bottom-4 md:right-4 text-xl md:text-4xl chinese">喜</div>
+            </div>
+            
+            <!-- Ngựa vàng decor -->
+            <div class="absolute -top-2 md:-top-4 left-1/4 text-3xl md:text-6xl opacity-20 gold-horse" style="color: #FFD700;">
+                🐎
+            </div>
+            <div class="absolute -top-2 md:-top-4 right-1/4 text-3xl md:text-6xl opacity-20 gold-horse" style="color: #FFD700; animation-delay: 0.5s">
+                🏇
+            </div>
+        </div>
         
         <!-- Nội dung chính -->
-        <div class="p-8 md:p-10 space-y-8">
+        <div class="p-4 md:p-10 space-y-6 md:space-y-8">
             <div class="text-center">
-                <h2 class="text-2xl md:text-3xl font-bold gradient-text mb-2">Thân mời bạn và toàn thể đồng nghiệp</h2>
-                <p class="chinese text-gray-600 mb-4">诚邀您与全体同事共聚</p>
+                <h2 class="text-xl md:text-3xl font-bold gradient-text mb-2">Thân mời bạn và toàn thể đồng nghiệp</h2>
+                <p class="chinese text-gray-600 text-sm md:text-base mb-4">诚邀您与全体同事共聚</p>
                 
-                <div class="inline-block px-6 py-3 bg-gradient-to-r from-red-50 to-yellow-50 rounded-full border border-red-200 mt-2">
-                    <p class="text-red-800 font-semibold text-lg"><i class="fas fa-glass-cheers mr-2"></i>CHÚNG TA CÙNG ĐÓN XUÂN</p>
+                <div class="inline-block px-4 py-2 md:px-6 md:py-3 bg-gradient-to-r from-red-50 to-yellow-50 rounded-full border border-red-200 mt-1 md:mt-2">
+                    <p class="text-red-800 font-semibold text-sm md:text-lg"><i class="fas fa-glass-cheers mr-2"></i>CHÚNG TA CÙNG ĐÓN XUÂN</p>
                 </div>
             </div>
             
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="grid md:grid-cols-2 gap-4 md:gap-6">
                 <!-- Thời gian -->
-                <div class="hover-lift bg-white p-6 rounded-2xl border-2 border-red-100 shadow-sm transition-all duration-300">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center mr-4 border border-red-200">
-                            <i class="fas fa-clock text-2xl text-red-600"></i>
+                <div class="hover-lift bg-white p-4 md:p-6 rounded-2xl border-2 border-red-100 shadow-sm transition-all duration-300">
+                    <div class="flex items-center mb-3 md:mb-4">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-red-100 to-red-50 flex items-center justify-center mr-3 md:mr-4 border border-red-200">
+                            <i class="fas fa-clock text-xl md:text-2xl text-red-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800">THỜI GIAN</h3>
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800">THỜI GIAN</h3>
                     </div>
                     <div class="space-y-2">
                         <p class="text-gray-700"><span class="font-bold text-red-600">19:00</span> - Thứ Bảy</p>
                         <p class="text-gray-700">28.02.2026</p>
-                        <p class="chinese text-gray-500 text-sm mt-3">2026年2月28日 星期六</p>
+                        <p class="chinese text-gray-500 text-xs md:text-sm mt-2 md:mt-3">2026年2月28日 星期六</p>
                     </div>
                     
-                    <div class="mt-6 pt-4 border-t border-dashed border-red-200">
+                    <div class="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-dashed border-red-200">
                         <p class="text-sm text-gray-500 mb-2">Còn lại:</p>
                         <div class="flex space-x-2">
-                            <div class="countdown-number w-10 h-10 rounded-lg flex items-center justify-center">
-                                <span class="text-white font-bold" id="countdown-days">45</span>
+                            <div class="countdown-number w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center">
+                                <span class="text-white font-bold text-sm md:text-base" id="countdown-days">45</span>
                             </div>
-                            <div class="countdown-number w-10 h-10 rounded-lg flex items-center justify-center">
-                                <span class="text-white font-bold" id="countdown-hours">12</span>
+                            <div class="countdown-number w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center">
+                                <span class="text-white font-bold text-sm md:text-base" id="countdown-hours">12</span>
                             </div>
-                            <div class="countdown-number w-10 h-10 rounded-lg flex items-center justify-center">
-                                <span class="text-white font-bold" id="countdown-minutes">08</span>
+                            <div class="countdown-number w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center">
+                                <span class="text-white font-bold text-sm md:text-base" id="countdown-minutes">08</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Địa điểm -->
-                <div class="hover-lift bg-white p-6 rounded-2xl border-2 border-yellow-100 shadow-sm transition-all duration-300">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-100 to-yellow-50 flex items-center justify-center mr-4 border border-yellow-200">
-                            <i class="fas fa-map-marker-alt text-2xl text-yellow-600"></i>
+                <div class="hover-lift bg-white p-4 md:p-6 rounded-2xl border-2 border-yellow-100 shadow-sm transition-all duration-300">
+                    <div class="flex items-center mb-3 md:mb-4">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-yellow-100 to-yellow-50 flex items-center justify-center mr-3 md:mr-4 border border-yellow-200">
+                            <i class="fas fa-map-marker-alt text-xl md:text-2xl text-yellow-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800">ĐỊA ĐIỂM</h3>
+                        <h3 class="text-lg md:text-xl font-bold text-gray-800">ĐỊA ĐIỂM</h3>
                     </div>
                     <div class="space-y-2">
-                        <p class="text-gray-700 font-bold">Nhà ăn công ty</p>
-                        <p class="text-gray-700">Boltun International</p>
-                        <p class="chinese text-gray-500 text-sm mt-3">国际恒耀有限公司员工餐厅</p>
+                        <p class="text-gray-700 font-bold text-sm md:text-base">Nhà ăn công ty</p>
+                        <p class="text-gray-700 text-sm md:text-base">Boltun International</p>
+                        <p class="chinese text-gray-500 text-xs md:text-sm mt-2 md:mt-3">国际恒耀有限公司员工餐厅</p>
                     </div>
                     
                     <a href="https://www.google.com/maps?q=Boltun+International&z=17" 
                        target="_blank"
-                       class="mt-6 w-full py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-semibold flex items-center justify-center hover:opacity-90 transition border-2 border-yellow-400 shadow-md hover:scale-[1.02]">
+                       class="mt-4 md:mt-6 w-full py-2 md:py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg font-semibold flex items-center justify-center hover:opacity-90 transition border-2 border-yellow-400 shadow-md hover:scale-[1.02] text-sm md:text-base">
                         <i class="fas fa-directions mr-2"></i> Xem chỉ đường
                     </a>
                 </div>
             </div>
             
-            <div class="text-center p-6 bg-gradient-to-r from-red-50 to-yellow-50 rounded-2xl border-2 border-red-200 shadow-inner">
-                <div class="flex justify-center space-x-4 mb-3">
-                    <div class="text-2xl text-red-500">🎁</div>
-                    <div class="text-2xl text-yellow-500">🎰</div>
-                    <div class="text-2xl text-red-500">🧧</div>
-                    <div class="text-2xl text-yellow-500">🐎</div>
+            <div class="text-center p-4 md:p-6 bg-gradient-to-r from-red-50 to-yellow-50 rounded-2xl border-2 border-red-200 shadow-inner">
+                <div class="flex justify-center space-x-2 md:space-x-4 mb-2 md:mb-3">
+                    <div class="text-xl md:text-2xl text-red-500">🎁</div>
+                    <div class="text-xl md:text-2xl text-yellow-500">🎰</div>
+                    <div class="text-xl md:text-2xl text-red-500">🧧</div>
+                    <div class="text-xl md:text-2xl text-yellow-500">🐎</div>
                 </div>
-                <p class="text-gray-700 font-semibold mb-1">
+                <p class="text-gray-700 font-semibold text-sm md:text-base mb-1">
                     Tiệc giao lưu & Bốc thăm may mắn
                 </p>
-                <p class="chinese text-gray-700 font-semibold mb-2">
+                <p class="chinese text-gray-700 font-semibold text-xs md:text-sm mb-1 md:mb-2">
                     交流晚宴 & 幸运抽奖
                 </p>
-                <p class="text-gray-600 text-sm mt-2">Vui lòng xác nhận tham dự trước ngày <span class="font-bold text-red-600">20.02.2026</span></p>
+                <p class="text-gray-600 text-xs md:text-sm mt-1 md:mt-2">Vui lòng xác nhận tham dự trước ngày <span class="font-bold text-red-600">20.02.2026</span></p>
             </div>
             
             <div class="text-center">
-                <button id="rsvpBtn" class="pulse inline-flex flex-col items-center px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-yellow-400">
-                    <span>TÔI SẼ THAM DỰ</span>
-                    <span>我将出席</span>
+                <button id="rsvpBtn" class="pulse inline-flex flex-col items-center px-4 py-3 md:px-8 md:py-4 bg-gradient-to-r from-red-600 to-red-700 text-white text-sm md:text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-yellow-400">
+                    <span class="text-sm md:text-base">TÔI SẼ THAM DỰ</span>
+                    <span class="text-xs md:text-sm">我将出席</span>
                 </button>
-                <p class="text-gray-500 text-sm mt-4">Nhấn để đăng ký tham dự • 点击立即注册</p>
+                <p class="text-gray-500 text-xs md:text-sm mt-2 md:mt-4">Nhấn để đăng ký tham dự • 点击立即注册</p>
             </div>
         </div>
         
         <!-- Footer -->
-        <div class="bg-gradient-to-r from-gray-900 to-red-900 text-white p-6 text-center">
-            <p class="text-xl font-bold mb-2 gold-shine">HẸN GẶP TẠI TIỆC!</p>
-            <p class="text-yellow-200 mb-4 chinese">您的光临是我们的荣幸</p>
+        <div class="bg-gradient-to-r from-gray-900 to-red-900 text-white p-4 md:p-6 text-center">
+            <p class="text-lg md:text-xl font-bold mb-1 md:mb-2 gold-shine">HẸN GẶP TẠI TIỆC!</p>
+            <p class="text-yellow-200 mb-3 md:mb-4 chinese text-sm md:text-base">您的光临是我们的荣幸</p>
             
-            <div class="flex justify-center space-x-6 text-yellow-300 mb-4">
-                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
-                    <i class="fab fa-facebook-f"></i>
+            <div class="flex justify-center space-x-4 md:space-x-6 text-yellow-300 mb-3 md:mb-4">
+                <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                    <i class="fab fa-facebook-f text-sm md:text-base"></i>
                 </a>
-                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
-                    <i class="fab fa-instagram"></i>
+                <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                    <i class="fab fa-instagram text-sm md:text-base"></i>
                 </a>
-                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
-                    <i class="fab fa-youtube"></i>
+                <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                    <i class="fab fa-youtube text-sm md:text-base"></i>
                 </a>
-                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
-                    <i class="fas fa-phone-alt"></i>
+                <a href="#" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                    <i class="fas fa-phone-alt text-sm md:text-base"></i>
                 </a>
             </div>
-            <p class="text-yellow-100/70 text-sm">© 2026 Boltun International</p>
+            <p class="text-yellow-100/70 text-xs md:text-sm">© 2026 Boltun International</p>
         </div>
         
-        <div class="absolute -bottom-4 -left-4 floating">
-            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-red-300 to-pink-300 opacity-30"></div>
+        <!-- Background decor -->
+        <div class="absolute -bottom-2 md:-bottom-4 -left-2 md:-left-4 floating">
+            <div class="w-12 h-12 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-red-300 to-pink-300 opacity-30"></div>
         </div>
-        <div class="absolute -top-4 -right-4 floating" style="animation-delay: 1.5s;">
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-200 opacity-30"></div>
+        <div class="absolute -top-2 md:-top-4 -right-2 md:-right-4 floating" style="animation-delay: 1.5s;">
+            <div class="w-10 h-10 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-200 opacity-30"></div>
         </div>
         
-        <div class="absolute top-2 left-2 text-red-300/20 chinese text-3xl rotate-45">福</div>
-        <div class="absolute bottom-2 right-2 text-yellow-300/20 chinese text-3xl -rotate-45">禄</div>
+        <div class="absolute top-1 left-1 md:top-2 md:left-2 text-red-300/20 chinese text-lg md:text-3xl rotate-45">福</div>
+        <div class="absolute bottom-1 right-1 md:bottom-2 md:right-2 text-yellow-300/20 chinese text-lg md:text-3xl -rotate-45">禄</div>
     </div>
     
+    <!-- Nhạc nền Tết -->
     <audio id="bgMusic" loop preload="auto">
         <source src="https://assets.mixkit.co/music/preview/mixkit-chinese-new-year-233.mp3" type="audio/mpeg">
     </audio>
@@ -577,61 +593,77 @@
         // ==================== CẤU HÌNH API ====================
         const API_URL = 'https://script.google.com/macros/s/AKfycbxFJJKSpEglQrr3TlLotQRfKpu9v3R6bu9W5sfs_udHpxUVPp2sxpER92jfWsLov8g8/exec';
         
+        // ==================== KIỂM TRA THIẾT BỊ MOBILE ====================
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
         // ==================== CÁC HÀM HIỆU ỨNG ====================
         const canvas = document.getElementById('fw');
-        const ctx = canvas.getContext('2d');
+        let ctx = null;
         let particles = [];
         
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.onresize = resizeCanvas;
-        resizeCanvas();
-        
-        function animateFireworks() {
-            ctx.fillStyle = 'rgba(128, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Khởi tạo canvas cho desktop
+        if (canvas && !isMobile) {
+            ctx = canvas.getContext('2d');
             
-            if(Math.random() < 0.03) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height * 0.5;
-                const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.onresize = resizeCanvas;
+            resizeCanvas();
+            
+            function animateFireworks() {
+                if (!ctx) return;
                 
-                for(let i = 0; i < 30; i++) {
-                    particles.push({
-                        x: x, y: y,
-                        vx: (Math.random() - 0.5) * 10,
-                        vy: (Math.random() - 0.5) * 10,
-                        alpha: 1, color: color
-                    });
+                ctx.fillStyle = 'rgba(128, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                if(Math.random() < 0.03) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height * 0.5;
+                    const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                    
+                    for(let i = 0; i < 30; i++) {
+                        particles.push({
+                            x: x, y: y,
+                            vx: (Math.random() - 0.5) * 10,
+                            vy: (Math.random() - 0.5) * 10,
+                            alpha: 1, color: color
+                        });
+                    }
                 }
+                
+                particles.forEach((particle, index) => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.alpha -= 0.02;
+                    
+                    ctx.globalAlpha = particle.alpha;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color;
+                    ctx.fill();
+                    
+                    if(particle.alpha <= 0) particles.splice(index, 1);
+                });
+                
+                requestAnimationFrame(animateFireworks);
             }
             
-            particles.forEach((particle, index) => {
-                particle.x += particle.vx;
-                particle.y += particle.vy;
-                particle.alpha -= 0.02;
-                
-                ctx.globalAlpha = particle.alpha;
-                ctx.beginPath();
-                ctx.arc(particle.x, particle.y, 2, 0, Math.PI * 2);
-                ctx.fillStyle = particle.color;
-                ctx.fill();
-                
-                if(particle.alpha <= 0) particles.splice(index, 1);
-            });
-            
-            requestAnimationFrame(animateFireworks);
+            setTimeout(() => animateFireworks(), 500);
         }
         
+        // Tạo hiệu ứng confetti
         function createConfetti() {
             const container = document.getElementById('confetti-container');
             const colors = ['#c62828', '#ef5350', '#ffd700', '#ff9800', '#4caf50'];
             
-            for (let i = 0; i < 50; i++) {
+            // Giảm số lượng confetti trên mobile
+            const count = isMobile ? 30 : 50;
+            
+            for (let i = 0; i < count; i++) {
                 const confetti = document.createElement('div');
-                confetti.className = 'absolute w-3 h-3 rounded-sm';
+                confetti.className = 'absolute w-2 h-2 md:w-3 md:h-3 rounded-sm';
                 confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 confetti.style.left = Math.random() * 100 + 'vw';
                 confetti.style.top = '-10px';
@@ -641,61 +673,65 @@
                 const animation = confetti.animate([
                     { transform: 'translateY(0) rotate(0deg)', opacity: 0.8 },
                     { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
-                ], { duration: Math.random() * 3000 + 2000, delay: Math.random() * 1000 });
+                ], { 
+                    duration: Math.random() * 2000 + 1500, 
+                    delay: Math.random() * 800 
+                });
                 
                 animation.onfinish = () => confetti.remove();
             }
         }
         
+        // Tạo phong bao lì xì bay
         function createEnvelopes() {
             const container = document.getElementById('envelopes-container');
             const envelopes = ['🧧', '🎊', '🎁', '✨', '🏮'];
             
-            for (let i = 0; i < 10; i++) {
+            // Giảm số lượng trên mobile
+            const count = isMobile ? 6 : 10;
+            
+            for (let i = 0; i < count; i++) {
                 const envelope = document.createElement('div');
                 envelope.className = 'envelope';
                 envelope.textContent = envelopes[Math.floor(Math.random() * envelopes.length)];
                 envelope.style.left = Math.random() * 100 + 'vw';
                 envelope.style.top = Math.random() * 100 + 'vh';
-                envelope.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                envelope.style.fontSize = (Math.random() * 20 + 15) + 'px';
                 envelope.style.opacity = Math.random() * 0.5 + 0.3;
                 envelope.style.animationDelay = Math.random() * 5 + 's';
-                envelope.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                envelope.style.animationDuration = (Math.random() * 5 + (isMobile ? 6 : 8)) + 's';
                 container.appendChild(envelope);
             }
         }
         
+        // Tạo hoa đào rơi
         function createCherryBlossoms() {
             const container = document.getElementById('cherry-container');
             
-            for (let i = 0; i < 15; i++) {
+            // Giảm số lượng trên mobile
+            const count = isMobile ? 8 : 15;
+            
+            for (let i = 0; i < count; i++) {
                 const cherry = document.createElement('div');
                 cherry.className = 'cherry-blossom';
                 cherry.textContent = '🌸';
                 cherry.style.left = Math.random() * 100 + 'vw';
-                cherry.style.fontSize = (Math.random() * 15 + 15) + 'px';
-                cherry.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                cherry.style.fontSize = (Math.random() * 10 + (isMobile ? 12 : 15)) + 'px';
+                cherry.style.animationDuration = (Math.random() * 10 + (isMobile ? 10 : 15)) + 's';
                 cherry.style.animationDelay = Math.random() * 10 + 's';
                 container.appendChild(cherry);
             }
         }
         
         // ==================== XỬ LÝ FORM ĐĂNG KÝ ====================
-        
-        // Hàm gọi Google Apps Script API
         async function submitToGoogleSheet(maNV, hoTen) {
-            // Tạo URL với query parameters
             const url = `${API_URL}?maNV=${encodeURIComponent(maNV)}&hoTen=${encodeURIComponent(hoTen)}`;
             
             try {
-                // Gửi request đến Google Apps Script
-                const response = await fetch(url, {
+                await fetch(url, {
                     method: 'GET',
-                    mode: 'no-cors' // Google Apps Script cần no-cors
+                    mode: 'no-cors'
                 });
-                
-                // Với no-cors, chúng ta không thể đọc response, chỉ biết là đã gửi
-                console.log('Data sent to Google Sheet:', { maNV, hoTen });
                 
                 return { success: true };
                 
@@ -706,27 +742,26 @@
         }
         
         // ==================== XỬ LÝ SỰ KIỆN ====================
-        
         document.addEventListener('DOMContentLoaded', () => {
             // Khởi tạo hiệu ứng
-            setTimeout(() => animateFireworks(), 500);
-            setTimeout(createConfetti, 800);
-            setInterval(createConfetti, 8000);
-            createEnvelopes();
-            createCherryBlossoms();
+            setTimeout(() => {
+                createConfetti();
+                createEnvelopes();
+                createCherryBlossoms();
+            }, 500);
             
+            // Thêm hiệu ứng định kỳ
+            setInterval(createConfetti, isMobile ? 15000 : 8000);
             setInterval(() => {
                 document.getElementById('envelopes-container').innerHTML = '';
                 document.getElementById('cherry-container').innerHTML = '';
                 createEnvelopes();
                 createCherryBlossoms();
-            }, 30000);
+            }, isMobile ? 40000 : 30000);
             
             // Xử lý nút RSVP
             const rsvpBtn = document.getElementById('rsvpBtn');
-            rsvpBtn.addEventListener('click', function() {
-                showRegistrationPopup();
-            });
+            rsvpBtn.addEventListener('click', showRegistrationPopup);
             
             // Xử lý nút âm nhạc
             const musicToggle = document.getElementById('musicToggle');
@@ -743,7 +778,7 @@
                 }
             });
             
-            // Đếm ngược
+            // Đếm ngược thời gian
             function updateRealCountdown() {
                 const targetDate = new Date('2026-02-28T19:00:00').getTime();
                 const now = new Date().getTime();
@@ -768,65 +803,94 @@
             updateRealCountdown();
             setInterval(updateRealCountdown, 60000);
             
-           // Xử lý form submit
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const maNV = document.getElementById('maNV').value.trim();
-    const hoTen = document.getElementById('hoTen').value.trim();
-    const submitBtn = this.querySelector('.btn-submit');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const successMessage = document.getElementById('successMessage');
-    
-    // Validate
-    if (!maNV || !hoTen) {
-        alert('Vui lòng nhập đầy đủ thông tin!');
-        return;
-    }
-    
-    // Hiện loading
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang xử lý...';
-    loadingSpinner.style.display = 'block';
-    successMessage.style.display = 'none';
-    
-    try {
-        // Gửi đến Google Apps Script
-        await submitToGoogleSheet(maNV, hoTen);
+            // Xử lý form submit
+            document.getElementById('registerForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const maNV = document.getElementById('maNV').value.trim();
+                const hoTen = document.getElementById('hoTen').value.trim();
+                const submitBtn = this.querySelector('.btn-submit');
+                const loadingSpinner = document.getElementById('loadingSpinner');
+                const successMessage = document.getElementById('successMessage');
+                
+                if (!maNV || !hoTen) {
+                    alert('Vui lòng nhập đầy đủ thông tin!');
+                    return;
+                }
+                
+                // Hiện loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang xử lý...';
+                loadingSpinner.style.display = 'block';
+                successMessage.style.display = 'none';
+                
+                try {
+                    await submitToGoogleSheet(maNV, hoTen);
+                    
+                    // Thành công
+                    successMessage.style.display = 'block';
+                    
+                    // Đổi nút RSVP - KHÔNG HIỆN MÃ NV
+                    rsvpBtn.innerHTML = `
+                        <div class="flex flex-col items-center">
+                            <span class="font-bold text-white text-sm md:text-base">🎉 ĐÃ ĐĂNG KÝ</span>
+                            <span class="text-white/90 text-xs md:text-sm">报名成功</span>
+                        </div>
+                    `;
+                    rsvpBtn.classList.remove('pulse');
+                    rsvpBtn.classList.remove('bg-gradient-to-r', 'from-red-600', 'to-red-700');
+                    rsvpBtn.classList.add('bg-gradient-to-r', 'from-green-500', 'to-green-600');
+                    rsvpBtn.disabled = true;
+                    
+                    // Hiệu ứng
+                    createConfetti();
+                    
+                    // Tự đóng popup sau 2s
+                    setTimeout(closePopup, 2000);
+                    
+                } catch (error) {
+                    alert('Lỗi đăng ký: ' + error.message + '\nVui lòng thử lại!');
+                    console.error('Registration error:', error);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Gửi đăng ký';
+                    loadingSpinner.style.display = 'none';
+                }
+            });
+            
+            // Thêm touch events cho mobile
+            if (isMobile) {
+                document.querySelectorAll('button, a').forEach(el => {
+                    el.style.cursor = 'pointer';
+                });
+            }
+        });
         
-        // Thành công
-        successMessage.style.display = 'block';
+        // ==================== HÀM TOÀN CỤC ====================
+        window.showRegistrationPopup = function() {
+            const popup = document.getElementById('registrationPopup');
+            popup.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
         
-        // SỬA ĐOẠN NÀY: Đổi nút RSVP - KHÔNG HIỆN MÃ NV
-        rsvpBtn.innerHTML = `
-            <div class="flex flex-col items-center">
-                <span class="font-bold text-white">🎉 ĐÃ ĐĂNG KÝ</span>
-                <span class="text-white/90 text-sm">报名成功</span>
-            </div>
-        `;
-        rsvpBtn.classList.remove('pulse');
-        rsvpBtn.classList.remove('bg-gradient-to-r', 'from-red-600', 'to-red-700');
-        rsvpBtn.classList.add('bg-gradient-to-r', 'from-green-500', 'to-green-600');
-        rsvpBtn.disabled = true;
+        window.closePopup = function() {
+            const popup = document.getElementById('registrationPopup');
+            popup.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('registerForm').reset();
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
         
-        // Hiệu ứng
-        createConfetti();
+        // Đóng popup khi click ra ngoài
+        document.getElementById('registrationPopup').addEventListener('click', function(e) {
+            if (e.target === this) closePopup();
+        });
         
-        // Tự đóng popup sau 2s
-        setTimeout(() => {
-            closePopup();
-        }, 2000);
-        
-    } catch (error) {
-        alert('Lỗi đăng ký: ' + error.message + '\nVui lòng thử lại!');
-        console.error('Registration error:', error);
-    } finally {
-        // Reset button
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Gửi đăng ký';
-        loadingSpinner.style.display = 'none';
-    }
-});
+        // Chặn zoom trên mobile
+        document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) { e.preventDefault(); }
+        }, { passive: false });
     </script>
 </body>
 </html>
